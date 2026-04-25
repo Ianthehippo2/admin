@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Schooled Live Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #89CFF0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
 
+    button {
+      width: 260px;
+      margin: 12px;
+      padding: 18px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 14px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .live { background: red; }
+    .offline { background: #23647D; }
+  </style>
+</head>
+<body>
+  <h1>Schooled Live Control</h1>
+
+  <button class="live" onclick="setLive(true)">GO LIVE</button>
+  <button class="offline" onclick="setLive(false)">GO OFFLINE</button>
+
+  <p id="status">Ready</p>
+
+  <script>
+    const STATUS_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/";
+
+    async function setLive(value) {
+      await fetch(STATUS_URL, {
+        method: "PUT",
+        body: JSON.stringify(value)
+      });
+
+      document.getElementById("status").textContent =
+        value ? "Changed to LIVE" : "Changed to OFFLINE";
+    }
+  </script>
+</body>
+</html>
