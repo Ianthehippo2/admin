@@ -38,17 +38,30 @@
   <p id="status">Ready</p>
 
   <script>
-    const STATUS_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/live.json";
+  const STATUS_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/live.json";
 
-    async function setLive(value) {
-      await fetch(STATUS_URL, {
+  async function setLive(value) {
+    const status = document.getElementById("status");
+
+    try {
+      const response = await fetch(STATUS_URL, {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(value)
       });
 
-      document.getElementById("status").textContent =
-        value ? "Changed to LIVE" : "Changed to OFFLINE";
+      if (!response.ok) {
+        throw new Error("Firebase rejected the request");
+      }
+
+      status.textContent = value ? "Changed to LIVE" : "Changed to OFFLINE";
+    } catch (error) {
+      status.textContent = "ERROR: Could not update status";
+      console.error(error);
     }
-  </script>
+  }
+</script>
 </body>
 </html>
