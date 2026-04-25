@@ -56,7 +56,7 @@
         throw new Error("Firebase rejected the request");
       }
 
-      status.textContent = value ? "12 Nominal" : "Changed to SW";
+      status.textContent = value ? "Changed to Live" : "Changed to Offline";
     } catch (error) {
       status.textContent = "ERROR: Could not update status";
       console.error(error);
