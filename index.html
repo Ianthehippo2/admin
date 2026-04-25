@@ -36,7 +36,13 @@
   <button class="offline" onclick="setLive(false)">GO SW</button>
 
   <p id="status">Ready</p>
+<h2>Firework Control</h2>
 
+<button onclick="changeFireworks(-1)">Reset Previous</button>
+<button onclick="changeFireworks(1)">Fire</button>
+
+<p id="fireworkStatus">Fireworks Ready</p>
+<p id="currentFireworkCount">Current: Loading...</p>
   <script>
   const STATUS_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/live.json";
 
@@ -62,6 +68,49 @@
       console.error(error);
     }
   }
+const FIREWORK_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/fireworksDimmed.json";
+
+  async function changeFireworks(amount) {
+    const status = document.getElementById("fireworkStatus");
+
+    try {
+      const response = await fetch(FIREWORK_URL + "?t=" + Date.now());
+      let current = await response.json();
+
+      current = current || 0;
+      current += amount;
+
+      if (current < 0) current = 0;
+      if (current > 14) current = 14;
+
+      await fetch(FIREWORK_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(current)
+      });
+
+      status.textContent = current + " fireworks dimmed";
+    } catch {
+      status.textContent = "ERROR updating fireworks";
+    }
+  }
+async function loadFireworkCount() {
+  const countBox = document.getElementById("currentFireworkCount");
+
+  try {
+    const response = await fetch(FIREWORK_URL + "?t=" + Date.now());
+    let current = await response.json();
+
+    current = current || 0;
+
+    countBox.textContent = "Current: " + current + " / 14 fireworks dimmed";
+  } catch {
+    countBox.textContent = "Current: Error loading count";
+  }
+}
+
+loadFireworkCount();
+setInterval(loadFireworkCount, 5000);
 </script>
 </body>
 </html>
