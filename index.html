@@ -43,6 +43,20 @@
 
 <p id="fireworkStatus">Fireworks Ready</p>
 <p id="currentFireworkCount">Current: Loading...</p>
+  <h2>Letter Day Control</h2>
+
+<select id="letterDaySelect">
+  <option value="A">A Day</option>
+  <option value="B">B Day</option>
+  <option value="C">C Day</option>
+  <option value="D">D Day</option>
+  <option value="E">E Day</option>
+  <option value="F">F Day</option>
+</select>
+
+<button onclick="setLetterDay()">Update Letter Day</button>
+
+<p id="letterDayStatus">Letter Day Ready</p>
   <script>
   const STATUS_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/live.json";
 
@@ -111,6 +125,36 @@ async function loadFireworkCount() {
 
 loadFireworkCount();
 setInterval(loadFireworkCount, 5000);
+    const LETTER_DAY_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/letterDay.json";
+
+async function setLetterDay() {
+  const day = document.getElementById("letterDaySelect").value;
+
+  await fetch(LETTER_DAY_URL, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(day)
+  });
+
+  document.getElementById("letterDayStatus").textContent =
+    "Changed to " + day + " Day";
+}
+
+async function loadLetterDay() {
+  try {
+    const response = await fetch(LETTER_DAY_URL + "?t=" + Date.now());
+    const day = await response.json();
+
+    if (day) {
+      document.getElementById("letterDaySelect").value = day;
+      document.getElementById("letterDayStatus").textContent =
+        "Current: " + day + " Day";
+    }
+  } catch {}
+}
+
+loadLetterDay();
+setInterval(loadLetterDay, 5000);
 </script>
 </body>
 </html>
