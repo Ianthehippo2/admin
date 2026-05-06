@@ -57,6 +57,16 @@
 <button onclick="setLetterDay()">Update Letter Day</button>
 
 <p id="letterDayStatus">Letter Day Ready</p>
+
+  <h2>Notification Control</h2>
+
+<textarea id="notificationText" placeholder="Type notification here..." style="width:260px;height:100px;padding:12px;font-size:1rem;"></textarea>
+
+<button onclick="setNotification(true)">Show Notification</button>
+<button onclick="setNotification(false)">Hide Notification</button>
+
+<p id="notificationStatus">Notification Ready</p>
+  
   <script>
   const STATUS_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/live.json";
 
@@ -155,6 +165,33 @@ async function loadLetterDay() {
 
 loadLetterDay();
 setInterval(loadLetterDay, 5000);
+const NOTIFICATION_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/notification.json";
+
+async function setNotification(show) {
+  const text = document.getElementById("notificationText").value;
+  const status = document.getElementById("notificationStatus");
+
+  const data = {
+    show: show,
+    text: text
+  };
+
+  try {
+    await fetch(NOTIFICATION_URL, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    status.textContent = show
+      ? "Notification is now showing"
+      : "Notification is hidden";
+
+  } catch (error) {
+    status.textContent = "ERROR updating notification";
+    console.error(error);
+  }
+}
 </script>
 </body>
 </html>
