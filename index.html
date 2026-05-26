@@ -52,16 +52,6 @@
   <option value="D">D Day</option>
   <option value="E">E Day</option>
   <option value="F">F Day</option>
-</select>
-
-<button onclick="setLetterDay()">Update Letter Day</button>
-
-<p id="letterDayStatus">Letter Day Ready</p>
-
-  <h2>Schedule Mode Control</h2>
-
-<select id="scheduleModeSelect">
-  <option value="regular">Regular Schedule</option>
   <option value="2026-06-01">B Day Finals</option>
   <option value="2026-06-02">C Day Finals</option>
   <option value="2026-06-03">D Day Finals</option>
@@ -69,9 +59,9 @@
   <option value="2026-06-05">Make-Up Exam Day</option>
 </select>
 
-<button onclick="setScheduleMode()">Update Schedule Mode</button>
+<button onclick="setLetterDay()">Update Letter Day</button>
 
-<p id="scheduleModeStatus">Schedule Mode Ready</p>
+<p id="letterDayStatus">Letter Day Ready</p>
 
   <h2>Notification Control</h2>
 
@@ -181,36 +171,6 @@ async function loadLetterDay() {
 loadLetterDay();
 setInterval(loadLetterDay, 5000);
 
-    const SCHEDULE_MODE_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/scheduleMode.json";
-
-async function setScheduleMode() {
-  const mode = document.getElementById("scheduleModeSelect").value;
-
-  await fetch(SCHEDULE_MODE_URL, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(mode)
-  });
-
-  document.getElementById("scheduleModeStatus").textContent =
-    "Changed schedule to " + mode;
-}
-
-async function loadScheduleMode() {
-  try {
-    const response = await fetch(SCHEDULE_MODE_URL + "?t=" + Date.now());
-    const mode = await response.json();
-
-    if (mode) {
-      document.getElementById("scheduleModeSelect").value = mode;
-      document.getElementById("scheduleModeStatus").textContent =
-        "Current: " + mode;
-    }
-  } catch {}
-}
-
-loadScheduleMode();
-setInterval(loadScheduleMode, 5000);
 const NOTIFICATION_URL = "https://schooled-live-status-default-rtdb.firebaseio.com/notification.json";
 
 async function setNotification(show) {
